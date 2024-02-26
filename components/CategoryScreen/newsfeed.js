@@ -10,7 +10,7 @@ const NewsFeed = () => {
     const contentData = useSelector((state) => state.selectedContent.contentData);
 
     if (!contentData) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
+        return <ActivityIndicator size="large" color="#1A2F5A" />;
     }
 
     // Helper to sort by date

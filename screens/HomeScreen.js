@@ -94,7 +94,7 @@ const HomeScreen = () => {
     const renderContent = () => {
         if (!dataLoaded) {
             // Render loading state or indicator
-            return <ActivityIndicator />;
+            return <ActivityIndicator color="#1A2F5A" />;
         }
 
         else if (selectedCategory === "pocetna") {

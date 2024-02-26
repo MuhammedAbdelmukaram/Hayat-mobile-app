@@ -226,7 +226,7 @@ const Article = ({ route }) => {
 
 
     if (isLoading) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
+        return <ActivityIndicator size="large" color="#1A2F5A" />;
     }
 
     if (!article) {

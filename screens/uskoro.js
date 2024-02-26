@@ -1,11 +1,19 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 
 const Uskoro = () => {
     const navigation = useNavigation();
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
     return (
         <View style={{ flex: 1, backgroundColor: '#252324' }}>
+            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#cd1717" }}>
+                <StatusBar
+                    translucent
+                    backgroundColor="#cd1717"
+                    barStyle="light-content"
+                />
+            </View>
 
             <View style={styles.container}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()} >

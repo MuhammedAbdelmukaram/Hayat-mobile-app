@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -8,45 +8,69 @@ import {
     TouchableOpacity,
     ScrollView,
     Dimensions,
-    Platform
+    Platform,
+    FlatList // For rendering a list of images
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const HayatPlay = () => {
     const navigation = useNavigation();
+    const [liveTvData, setLiveTvData] = useState([]); // State for live TV data
+    const [loading, setLoading] = useState(true);
+    const [tvShowsData, setTvShowsData] = useState(true);
 
-    const scrollViewRef = useRef();
-    const totalWidth = 378 * 2 + 20; // Total content width = width of both cards + marginRight of the first card
-    const [activeSection, setActiveSection] = useState(0); // 0 for the first item, 1 for the second item
-
-    const screenWidth = Dimensions.get('window').width;
-    const handleScroll = (event) => {
-        const scrollPosition = event.nativeEvent.contentOffset.x;
-        const halfPoint = (totalWidth - screenWidth) / 2;
-        setActiveSection(scrollPosition < halfPoint ? 0 : 1);
+    const fetchVODData = async (catUid = '0') => {
+        try {
+            const url = `https://backend.hayat.ba/vod_cat_${catUid}`;
+            const response = await axios.get(url);
+            setTvShowsData(response.data.feed);
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+        }
     };
 
+    const fetchLiveTvData = async () => {
+        try {
+            const response = await axios.get('https://backend.hayat.ba/channels');
+            setLiveTvData(response.data.feed); // Store the live TV data
+        } catch (error) {
+            console.error('Failed to fetch live TV data:', error);
+        }
+    };
+
+    useEffect(() => {
+        setLoading(true);
+        const fetchData = async () => {
+            await fetchVODData();
+            await fetchLiveTvData();
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
+
+    // Adjust the width for the container if necessary
+    const screenWidth = Dimensions.get('window').width;
+
     const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
-    const HEADER_HEIGHT = Platform.OS === "ios" ? 44 : 56;
+
+    const chunkData = (data, chunkSize) => {
+        let result = [];
+        for (let i = 0; i < data.length; i += chunkSize) {
+            result.push(data.slice(i, i + chunkSize));
+        }
+        return result;
+    };
 
     return (
-        <View style={styles.wrapper}>
+        <ScrollView style={styles.wrapper}>
             <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#cd1717" }}>
-                <StatusBar
-                    translucent
-                    backgroundColor="#cd1717"
-                    barStyle="light-content"
-                />
+                <StatusBar translucent backgroundColor="#cd1717" barStyle="light-content" />
             </View>
-
 
             <View style={styles.container}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()} >
-                    <Image
-                        source={require('../assets/backIcon.png')}
-                        style={styles.backIcon}
-                        resizeMode={"contain"}
-                    />
+                    <Image source={require('../assets/backIcon.png')} style={styles.backIcon} resizeMode={"contain"} />
                 </TouchableOpacity>
             </View>
 
@@ -54,47 +78,41 @@ const HayatPlay = () => {
                 <Text style={styles.title}>Dobrodošli u Hayat Play</Text>
             </View>
 
-            {/* Use ScrollView for horizontal scrolling */}
-            <ScrollView
-                style={styles.cardWrapper}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                onScroll={handleScroll}
-                scrollEventThrottle={16}
-            >
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('VODcategories')}>
-                    <Image
-                        source={require('../assets/Videoteka.png')}
-                        style={styles.image}
-                        resizeMode={"contain"}
-                    />
-                    <Text style={styles.heading}>VIDEOTEKA</Text>
-                    <Text style={styles.subheading}>Pogledajte ponovo svoje omiljene serije kao sav hayatov sadrzaj u videoteci</Text>
-                </TouchableOpacity>
+            <View style={[styles.cardWrapper, { width: screenWidth - 40 }]}>
 
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('LiveTV')}>
-                    <Image
-                        source={require('../assets/Videoteka.png')}
-                        style={styles.image}
-                        resizeMode={"contain"}
-                    />
+                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('LiveTV', { data: tvShowsData })}>
+                    {/* Render images in a 3x2 grid */}
+                    {chunkData(liveTvData, 3).map((row, rowIndex) => (
+                        <View key={rowIndex} style={styles.row}>
+                            {row.map((item, index) => (
+                                <Image
+                                    key={index}
+                                    source={{ uri: `https://backend.hayat.ba/logos/large/${item.ch}.png` }}
+                                    style={styles.channelImage} // Adjust this style as needed
+                                    resizeMode="contain"
+                                />
+                            ))}
+                        </View>
+                    ))}
                     <View style={styles.headingGlow}>
                         <Text style={styles.heading}>LIVE TV</Text>
                     </View>
-                    <Text style={styles.subheading}>Otkrijte više omiljenih serija i sadržaja u našoj videoteci</Text>
                 </TouchableOpacity>
-            </ScrollView>
 
-            {/* Custom Scroll Indicator */}
-            <View style={styles.indicatorContainer}>
-                <View style={styles.indicatorContainer}>
-                    {/* Left half indicator */}
-                    <View style={[styles.indicatorHalf, activeSection === 0 ? styles.activeIndicator : styles.inactiveIndicator]} />
-                    {/* Right half indicator */}
-                    <View style={[styles.indicatorHalf, activeSection === 1 ? styles.activeIndicator : styles.inactiveIndicator]} />
-                </View>
+                <TouchableOpacity
+                    style={styles.card}
+                    onPress={() => navigation.navigate('VODcategories', { data: tvShowsData })}
+                >
+                    <Image source={require('../assets/Videoteka.png')} style={styles.image} resizeMode={"contain"} />
+                    <Text style={styles.heading}>VIDEOTEKA</Text>
+                </TouchableOpacity>
+
+
             </View>
-        </View>
+
+            {/* Display Live TV Channels Images */}
+
+        </ScrollView>
     );
 };
 
@@ -103,12 +121,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#252324",
         flex: 1,
     },
+
     indicatorContainer: {
         flexDirection: 'row',
         height: 2,
         width: '100%',
         position: 'absolute',
         bottom: 10,
+    },
+    channelImage: {
+        width: (Dimensions.get('window').width / 2 - 30) / 3 - 10, // Adjust width to fit 3 images in a row, considering padding and margin
+        height: 60, // Maintain the aspect ratio or adjust as needed
+        resizeMode: 'contain',
     },
     indicatorHalf: {
         flex: 1, // Each half takes up half of the container
@@ -131,15 +155,15 @@ const styles = StyleSheet.create({
     cardWrapper: {
         flexDirection: "row",
         paddingHorizontal: 20,
-        marginTop: 30,
-        marginBottom: 270, // Adjust if necessary to accommodate the indicator
+        marginTop: 80,
+        marginBottom: 270, // Adjust if necessary
     },
     card: {
         backgroundColor: "#252324",
         padding: 20,
         alignItems: 'center',
         marginRight: 20,
-        width: 378,
+        width: (Dimensions.get('window').width / 2) - 30, // Adjusted to half of viewport width - padding
     },
     image: {
         width: 300,
@@ -161,18 +185,15 @@ const styles = StyleSheet.create({
     heading: {
         color: "#fff",
         marginTop: 20,
+        width:150,
         paddingVertical: 10,
-        paddingHorizontal: 30,
-        fontSize: 24,
+        fontSize: 17,
         borderWidth: 1,
         borderColor: "#fff",
         textAlign: 'center',
         textShadowColor: 'rgba(255, 255, 255, 0.8)', // Adjust the alpha value for opacity
         textShadowOffset: {width: 0, height: 0}, // Can be adjusted if needed
         textShadowRadius: 10,
-
-
-
     },
     backIcon: {
         alignSelf: "flex-start",
@@ -181,6 +202,13 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
     },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Adjust as needed to fit your design
+        marginBottom: 6.6, // Add some bottom margin to each row
+    },
+
+
 });
 
 export default HayatPlay;

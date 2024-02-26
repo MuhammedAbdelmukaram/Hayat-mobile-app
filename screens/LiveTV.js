@@ -1,11 +1,20 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image, StyleSheet} from "react-native";
+import {View, Text, TouchableOpacity, Image, StyleSheet, StatusBar, Platform} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 
 const LiveTv = () => {
     const navigation = useNavigation();
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
+
     return (
         <View style={{ flex: 1, backgroundColor: '#252324' }}>
+            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#cd1717" }}>
+                <StatusBar
+                    translucent
+                    backgroundColor="#cd1717"
+                    barStyle="light-content"
+                />
+            </View>
             <View style={styles.container}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()} >
                     <Image
