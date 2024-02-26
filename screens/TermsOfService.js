@@ -1,11 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, StatusBar} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import {setUser} from "../redux/slices/userSlice";
 import {useDispatch} from "react-redux";
-
+import {API_URL} from '@env';
 const TermsOfService = ({ navigation }) => {
 
 
@@ -35,11 +35,20 @@ const TermsOfService = ({ navigation }) => {
         }
     };
 
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
+
     return (
         <View>
+            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#cd1717" }}>
+                <StatusBar
+                    translucent
+                    backgroundColor="#1A2F5A"
+                    barStyle="light-content"
+                />
+            </View>
 
             <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.heading}>Terms of Service</Text>
+                <Text style={styles.heading}>Pravila Upotrebe</Text>
                 <Text style={styles.text}>
                     Potvrđujem da imam 18 godina ili više i da sam pročitao/la i da prihvatam Opšte uslove korištenja Hayat d.o.o. Sarajevo. U skladu sa odredbom člana 5. Zakona o zaštiti ličnih/osobnih podataka („Sl. glasnik BiH“ broj 49/06), ovim izjavljujem i aceptiranjem potvrđujem svoju saglasnost da Hayat d.o.o. Sarajevo poduzima sve radnje vezano za obradu mojih ličnih/osobnih podataka i to: ime, prezime, email, a sve u svrhu ućešća za uručivanje poklona.
 
@@ -49,7 +58,7 @@ const TermsOfService = ({ navigation }) => {
                 </Text>
 
                 <TouchableOpacity style={styles.button} onPress={handleAcceptTerms}>
-                    <Text style={styles.buttonText}>Accept Terms and Create Account</Text>
+                    <Text style={styles.buttonText}>Prihvati</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
@@ -60,6 +69,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         padding: 20,
+        paddingTop:100,
         backgroundColor: '#FFF',
     },
     heading: {

@@ -9,7 +9,9 @@ import {
     ScrollView,
     Dimensions,
     Platform,
-    FlatList // For rendering a list of images
+    Linking,
+    FlatList // For rendering a list of imagesm
+
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -52,7 +54,7 @@ const HayatPlay = () => {
     // Adjust the width for the container if necessary
     const screenWidth = Dimensions.get('window').width;
 
-    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
 
     const chunkData = (data, chunkSize) => {
         let result = [];
@@ -69,9 +71,18 @@ const HayatPlay = () => {
             </View>
 
             <View style={styles.container}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()} >
+                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
                     <Image source={require('../assets/backIcon.png')} style={styles.backIcon} resizeMode={"contain"} />
                 </TouchableOpacity>
+
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../assets/hayatLogo.png')}
+                        style={styles.headerLogo}
+                    />
+                </View>
+                {/* Invisible Spacer to balance the layout */}
+                <View style={styles.spacer} />
             </View>
 
             <View>
@@ -80,7 +91,10 @@ const HayatPlay = () => {
 
             <View style={[styles.cardWrapper, { width: screenWidth - 40 }]}>
 
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('LiveTV', { data: tvShowsData })}>
+                <TouchableOpacity style={styles.card} onPress={() => {
+                    const url = 'https://hayat.ba/gledaj.php'; // New URL for Live TV
+                    Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+                }}>
                     {/* Render images in a 3x2 grid */}
                     {chunkData(liveTvData, 3).map((row, rowIndex) => (
                         <View key={rowIndex} style={styles.row}>
@@ -101,7 +115,10 @@ const HayatPlay = () => {
 
                 <TouchableOpacity
                     style={styles.card}
-                    onPress={() => navigation.navigate('VODcategories', { data: tvShowsData })}
+                    onPress={() => {
+                        const url = 'https://hayat.ba/play.php'; // New URL for Videoteka
+                        Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+                    }}
                 >
                     <Image source={require('../assets/Videoteka.png')} style={styles.image} resizeMode={"contain"} />
                     <Text style={styles.heading}>VIDEOTEKA</Text>
@@ -206,6 +223,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between', // Adjust as needed to fit your design
         marginBottom: 6.6, // Add some bottom margin to each row
+    },
+    logoContainer: {
+        position: 'absolute', // Logo is positioned absolutely to ensure it's centered
+        left: 0,
+        right: 0, // These properties ensure the View is centered
+        alignItems: 'center', // This ensures the Image within the View is centered
+        height: '100%', // Match the container height to center vertically
+        justifyContent: 'center', // Center the logo vertically in the container
+    },
+    headerLogo: {
+        height: 16,
+        width: 78,
     },
 
 

@@ -4,7 +4,7 @@ import {useNavigation} from "@react-navigation/native";
 
 const Uskoro = () => {
     const navigation = useNavigation();
-    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
     return (
         <View style={{ flex: 1, backgroundColor: '#252324' }}>
             <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#cd1717" }}>

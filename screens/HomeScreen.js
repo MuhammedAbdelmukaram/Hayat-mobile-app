@@ -23,6 +23,7 @@ import CategoryHighlightNews from "../components/CategoryHighlightNews";
 import Najnovije from "./Najnovije";
 import {API_URL} from '@env';
 import LoadingScreen from "./LoadingScreen";
+import {setUser} from "../redux/slices/userSlice";
 
 const theme = {
     ...DefaultTheme,
@@ -37,7 +38,7 @@ const HomeScreen = () => {
     const dispatch = useDispatch();
     const [dataLoaded, setDataLoaded] = useState(false);
     const userInfo = useSelector((state) => state.user.userInfo);
-
+    const [userInfoLoaded, setUserInfoLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     // Function to update loading state
@@ -80,16 +81,16 @@ const HomeScreen = () => {
 
 
 
+
     useEffect(() => {
-        if (userInfo && !userInfo.confirmed) {
+        if (userInfoLoaded && userInfo && !userInfo.confirmed) {
             // User is logged in but not confirmed, show an alert
-            console.log(userInfo.confirmed);
             Alert.alert(
                 "Verify Your Account",
                 "You need to verify your account. Check your email."
             );
         }
-    }, [userInfo]);
+    }, [userInfo, userInfoLoaded]);
 
     const renderContent = () => {
         if (!dataLoaded) {
@@ -137,7 +138,7 @@ const HomeScreen = () => {
     }, [selectedCategory]);
 
 
-    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
     const HEADER_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 
@@ -146,22 +147,27 @@ const HomeScreen = () => {
 
 
     return (
-        <ScrollView bounces={false} overScrollMode="never">
-            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#1A2F5A" }}>
+        <View>
+
+            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#1A2F5A", zIndex:-1 }}>
                 <StatusBar translucent backgroundColor="#1A2F5A" barStyle="light-content" />
             </View>
             {isLoading ? (
                 <LoadingScreen />
             ) : (
                 <>
+
                     <Header />
                     <NavList />
+                    <ScrollView bounces={false} overScrollMode="never" >
                     <View>
                         {renderContent()}
                     </View>
+                </ScrollView>
                 </>
             )}
-        </ScrollView>
+
+        </View>
     );
 
 };

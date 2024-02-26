@@ -233,7 +233,7 @@ const Article = ({ route }) => {
         return <Text>Article not found.</Text>;
     }
 
-    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 20 : StatusBar.currentHeight;
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
     const HEADER_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 
@@ -433,7 +433,7 @@ const Article = ({ route }) => {
 
     return (
         <ScrollView >
-            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#1A2F5A" }}>
+            <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#1A2F5A", zIndex:-1 }}>
                 <StatusBar
                     translucent
                     backgroundColor="#1A2F5A"
@@ -489,8 +489,8 @@ const Article = ({ route }) => {
 
             {article && (
                 <>
-                    <View style={{backgroundColor:"#f6f6f6"}}>
-                        <View style={{margin:10, backgroundColor:"#f6f6f6"}}>
+                    <View style={{}}>
+                        <View style={{margin:10}}>
                             {contentToDisplay}
                         </View>
                     </View>
@@ -504,11 +504,13 @@ const Article = ({ route }) => {
                 <Text style={styles.title}>{article.title}</Text>
 
                 <View style={styles.greyContent}>
-                    <Text style={styles.author}>   </Text>
+                    <Text style={styles.author}>
+                        {article.display_name}
+                    </Text>
 
 
                     <View style={styles.dateTimeWrapper}>
-                        {/*<Text style={styles.date}>{formatDate(article.date_time)}</Text>*/}
+                        {/*<Text style={styles.date}>{formatDate(article.create_date)}</Text>*/}
 
 
                     </View>
@@ -677,7 +679,7 @@ const Article = ({ route }) => {
                         <View style={styles.tags}>
                             {article.tags.map((tagItem, index) => (
                                 <TouchableOpacity key={index} style={styles.tag} activeOpacity={0.82}>
-                                    <Text style={styles.tagText}>{tagItem.tag}</Text>
+                                    <Text style={styles.tagText}>#{tagItem.tag}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>

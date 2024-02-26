@@ -68,7 +68,7 @@ const Login = ({ navigation }) => {
         }
         setIsSubmitting(false); // Re-enable the login button
     };
-    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
     const HEADER_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 

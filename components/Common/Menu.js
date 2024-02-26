@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Animated, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Animated, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
 import SocialMediaIcons from "../Menu/SocialMediaIcons";
 import HorizontalLine from "../Menu/HorizontalLine";
 import {useFonts} from '@expo-google-fonts/blinker';
@@ -311,7 +311,8 @@ const styles = StyleSheet.create({
         justifyContent:"flex-start",
         backgroundColor: '#1A2F5A',
         paddingLeft: 16,
-        width:"100%"
+        width:"100%",
+        paddingTop: Platform.OS === 'ios' ? 40 : 0, // Apply paddingTop only for iOS
     },
     menuHeader:{
         backgroundColor:"#1A2F5A",

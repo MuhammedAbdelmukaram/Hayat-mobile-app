@@ -13,7 +13,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import logo from "../assets/hayatLogo.png";
 import axios from "axios";
-
+import {API_URL} from '@env';
 const Signup = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -47,7 +47,7 @@ const Signup = ({ navigation }) => {
             console.error('Failed to proceed to TermsOfService:', error);
         }
     };
-    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 30 : StatusBar.currentHeight;
+    const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 40 : StatusBar.currentHeight;
     const HEADER_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
     return (

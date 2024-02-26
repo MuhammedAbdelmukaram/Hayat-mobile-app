@@ -138,6 +138,7 @@ const NavList = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.container}
             bounces={false}
+            overScrollMode="never"
         >
 
         <TouchableOpacity
@@ -185,10 +186,12 @@ const styles = StyleSheet.create({
     },
     button: {
         width: 120,
+        height:66,
         paddingVertical: 14,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 4,
+
     },
     buttonText: {
         fontWeight: '500',
