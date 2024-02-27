@@ -50,7 +50,7 @@ const NavList = () => {
 
         const fetchNajnovije = async () => {
             try {
-                const response = await axios.get(`https://backproba.hayat.ba/articles/mob/najnovije`);
+                const response = await axios.get(`${API_URL}/articles/mob/najnovije`);
              //   console.log('Fetched data with axios:', response.data);
                 dispatch(setNajnovijeData(response.data)); // Dispatch the action to set najnovije data
             } catch (error) {

@@ -39,16 +39,19 @@ const Najnovije = () => {
                     return (
                         <Priority2
                             key={article._id}
+                            articleID={article._id}
                             image={{ uri: article.image_list[0]?.url }}
                             articleTitle={article.title}
                             articleSubtitle={article.subtitle}
                             article={article}
+
                         />
                     );
                 } else if (article.photo_post) {
                     return (
                         <Priority3
                             key={article._id}
+                            articleID={article._id}
                             image={{ uri: article.image_list[0]?.url }}
                             articleTitle={article.title}
                             articleSubtitle={article.subtitle}
@@ -59,6 +62,7 @@ const Najnovije = () => {
                     return (
                         <Priority5
                             key={article._id}
+                            articleID={article._id}
                             image={{ uri: article.image_list[0]?.url }}
                             articleTitle={article.title}
                         />

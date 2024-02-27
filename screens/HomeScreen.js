@@ -159,7 +159,7 @@ const HomeScreen = () => {
 
                     <Header />
                     <NavList />
-                    <ScrollView bounces={false} overScrollMode="never" >
+                    <ScrollView bounces={false} overScrollMode="never" style={{marginTop:10}}>
                     <View>
                         {renderContent()}
                     </View>
