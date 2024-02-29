@@ -31,7 +31,7 @@ const CategoryHighlightNews = () => {
     }, []);
 
     const getCategoryName = (categoryId) => {
-        const category = categoriesData.find(c => c._id === categoryId);
+        const category = categoriesData?.find(c => c._id === categoryId);
         return category ? category.name : 'Unknown Category';
     };
 
